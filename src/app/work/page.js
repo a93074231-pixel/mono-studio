@@ -192,11 +192,11 @@ export default function WorkPage() {
       {/* Hero */}
       <section
         data-work-hero
-        className="px-5 pb-14 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:px-16 lg:pb-24 lg:pt-48"
+        className="px-5 pb-14 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:px-16 lg:pb-24 lg:pt-18"
       >
         <div className="mx-auto max-w-[1600px]">
           <div className="mb-8 flex items-center justify-between gap-4">
-            <p
+            {/* <p
               data-work-intro
               className="flex items-center gap-3 text-[10px] uppercase tracking-[0.23em] text-black/55 sm:text-xs"
             >
@@ -209,7 +209,7 @@ export default function WorkPage() {
               className="text-[10px] uppercase tracking-[0.18em] text-black/45 sm:text-xs"
             >
               Independent creative studio
-            </p>
+            </p> */}
           </div>
 
           <h1

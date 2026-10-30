@@ -152,16 +152,16 @@ export default function StudioPage() {
       {/* Studio hero */}
       <section
         data-studio-hero
-        className="px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-40 lg:px-16 lg:pb-36 lg:pt-48"
+        className="px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-40 lg:px-16 lg:pb-36 lg:pt-22"
       >
         <div className="mx-auto max-w-[1600px]">
-          <p
+          {/* <p
             data-studio-intro
             className="mb-8 flex items-center gap-3 text-[10px] uppercase tracking-[0.23em] text-black/55 sm:text-xs"
           >
             <span className="h-2 w-2 rounded-full bg-[#D253B6]" />
             Meet MONO / Independent by nature
-          </p>
+          </p> */}
 
           <h1
             data-studio-intro

@@ -175,7 +175,7 @@ export default function JournalPage() {
       className="min-h-screen overflow-hidden bg-[#EFEFEF] text-[#151515]"
     >
       {/* Hero */}
-      <section className="px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-44 lg:px-12 lg:pt-48">
+      <section className="px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-44 lg:px-12 lg:pt-30">
         <div className="mx-auto max-w-[1600px]">
           <div className="journal-hero-item mb-7 flex items-center gap-3">
             <span className="h-2.5 w-2.5 rounded-full bg-[#D253B6]" />

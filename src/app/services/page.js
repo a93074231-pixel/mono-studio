@@ -167,16 +167,16 @@ export default function ServicesPage() {
       {/* Hero */}
       <section
         data-services-page-hero
-        className="px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:px-16 lg:pb-28 lg:pt-48"
+        className="px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-40 lg:px-16 lg:pb-28 lg:pt-28"
       >
         <div className="mx-auto max-w-[1600px]">
-          <p
+          {/* <p
             data-services-page-intro
             className="mb-8 flex items-center gap-3 text-[10px] uppercase tracking-[0.23em] text-black/55 sm:text-xs"
           >
             <span className="h-2 w-2 rounded-full bg-[#D253B6]" />
             What we do / Our capabilities
-          </p>
+          </p> */}
 
           <h1
             data-services-page-intro

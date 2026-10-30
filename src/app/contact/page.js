@@ -113,7 +113,7 @@ export default function ContactPage() {
       className="min-h-screen overflow-hidden bg-[#EFEFEF] text-[#151515]"
     >
       {/* Hero */}
-      <section className="bg-[#D253B6] px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-44 lg:px-12 lg:pt-48">
+      <section className="bg-[#D253B6] px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-44 lg:px-12 lg:pt-25">
         <div className="mx-auto max-w-[1600px]">
           <div className="contact-hero-item mb-7 flex items-center gap-3">
             <span className="h-2.5 w-2.5 rounded-full bg-[#151515]" />
@@ -125,7 +125,7 @@ export default function ContactPage() {
           <h1 className="contact-hero-item font-[var(--font-syne)] text-[clamp(4rem,13vw,12rem)] font-bold leading-[0.8] tracking-[-0.09em]">
             Lets talk
             <br />
-            about it<span className="text-[#EFEFEF]">.</span>
+            about it<span className="text-[#EFEFEF]"></span>
           </h1>
 
           <div className="contact-hero-item mt-12 flex flex-col justify-between gap-6 border-t border-[#151515]/30 pt-6 sm:mt-16 md:flex-row md:items-end">

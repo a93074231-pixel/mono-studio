@@ -1,0 +1,207 @@
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import gsap from "gsap";
+
+const links = [
+  { label: "Work", href: "/work" },
+  { label: "Studio", href: "/studio" },
+  { label: "Services", href: "/services" },
+  { label: "Journal", href: "/journal" },
+  { label: "Contact", href: "/contact" },
+];
+
+export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const panelRef = useRef(null);
+  const backdropRef = useRef(null);
+  const buttonRef = useRef(null);
+  const timelineRef = useRef(null);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    const backdrop = backdropRef.current;
+
+    if (!panel || !backdrop) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const ctx = gsap.context(() => {
+      gsap.set([panel, backdrop], {
+        autoAlpha: 0,
+        pointerEvents: "none",
+      });
+
+      gsap.set(".menu-link", { y: 14, autoAlpha: 0 });
+
+      timelineRef.current = gsap.timeline({
+        paused: true,
+        defaults: { ease: "power3.out" },
+      });
+
+      timelineRef.current
+        .to(backdrop, {
+          autoAlpha: 1,
+          duration: reduceMotion ? 0 : 0.3,
+          pointerEvents: "auto",
+        })
+        .to(
+          panel,
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: reduceMotion ? 0 : 0.45,
+            pointerEvents: "auto",
+          },
+          reduceMotion ? 0 : "-=0.12"
+        )
+        .to(
+          ".menu-link",
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: reduceMotion ? 0 : 0.35,
+            stagger: reduceMotion ? 0 : 0.055,
+          },
+          reduceMotion ? 0 : "-=0.2"
+        );
+    });
+
+    return () => {
+      timelineRef.current = null;
+      ctx.revert();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!timelineRef.current) return;
+
+    if (menuOpen) {
+      gsap.set(panelRef.current, {
+        y: -12,
+        scale: 0.98,
+        transformOrigin: "top right",
+      });
+
+      gsap.set(".menu-link", { y: 14, autoAlpha: 0 });
+      timelineRef.current.play(0);
+    } else {
+      timelineRef.current.reverse();
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <>
+      {/* Dim the page behind the menu */}
+      <button
+        ref={backdropRef}
+        type="button"
+        aria-label="Close navigation"
+        onClick={() => setMenuOpen(false)}
+        className="fixed inset-0 z-40 cursor-default bg-black/20 backdrop-blur-[2px]"
+      />
+
+      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-5 md:px-9 md:py-7">
+        <Link
+          href="/"
+          aria-label="MONO home"
+          onClick={() => setMenuOpen(false)}
+          className="flex h-[46px] w-[46px] items-center justify-center border-[2.5px] border-[#151515] text-lg font-extrabold tracking-[-2px] md:h-[54px] md:w-[54px] md:text-xl"
+        >
+          M<span className="text-[#D253B6]">.</span>
+        </Link>
+
+        <div className="flex items-center gap-2.5 md:gap-3">
+          <a
+            href="#contact"
+            onClick={() => setMenuOpen(false)}
+            className="group inline-flex items-center gap-1.5 rounded-full bg-[#151515] px-3 py-2.5 text-sm text-white transition-colors hover:bg-[#A11882] md:px-5 md:py-3"
+          >
+            Hire us
+            <span className="text-xl transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </a>
+
+          <button
+            ref={buttonRef}
+            type="button"
+            aria-controls="mono-navigation"
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+            className="flex h-[42px] w-[42px] items-center justify-center rounded-full border-2 border-black transition-colors hover:bg-[#A11882] hover:text-white md:h-[44px] md:w-[44px]"
+          >
+            <span className="relative flex h-4 w-6 items-center justify-center">
+              <span
+                className={`absolute h-[2px] w-full bg-current transition-transform duration-300 ${
+                  menuOpen ? "rotate-45" : "-translate-y-[5px]"
+                }`}
+              />
+              <span
+                className={`absolute h-[2px] w-full bg-current transition-transform duration-300 ${
+                  menuOpen ? "-rotate-45" : "translate-y-[5px]"
+                }`}
+              />
+            </span>
+          </button>
+        </div>
+
+
+<nav
+  id="mono-navigation"
+  ref={panelRef}
+  aria-label="Main navigation"
+  aria-hidden={!menuOpen}
+  inert={!menuOpen}  
+    className="invisible pointer-events-none fixed right-4 top-4 z-[10000] w-[min(370px,calc(100vw-2rem))] rounded-[26px] bg-white px-[30px] pb-[30px] pt-[24px] text-black shadow-xl md:right-5 md:top-5 md:w-[370px]"
+>
+
+
+  <div className="flex flex-col">
+    {links.map((link, index) => (
+      <a
+        key={link.label}
+        href={link.href}
+        onClick={() => setMenuOpen(false)}
+        className="menu-link block py-[5px] text-[29px] font-normal leading-[1.2] tracking-[-1.3px] transition-colors hover:text-neutral-500"
+      >
+        {link.label}
+        {link.label === "Services" && (
+          <span className="ml-1 text-[25px]">+</span>
+        )}
+      </a>
+    ))}
+  </div>
+
+  <a
+    href="#contact"
+    onClick={() => setMenuOpen(false)}
+    className="menu-link mt-[28px] flex items-center justify-between gap-3 rounded-full border-[1.5px] border-black px-[22px] py-[12px] text-[20px] leading-none tracking-[-0.5px] transition-colors hover:bg-black hover:text-white"
+  >
+    Start your project
+    <span className="text-[28px] font-light">→</span>
+  </a>
+</nav>
+
+      </header>
+    </>
+  );
+}

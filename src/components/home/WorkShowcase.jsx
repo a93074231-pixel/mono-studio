@@ -230,7 +230,7 @@ export default function WorkShowcase() {
             >
               Made to
               <br />
-              <span className="text-[#D253B6]">stand out.</span>
+              <span className="text-[#D253B6]">stand out .</span>
             </h2>
 
             <p

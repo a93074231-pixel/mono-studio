@@ -187,7 +187,7 @@ export default function BrandPrinciples() {
             <article
               key={principle.number}
               data-principle-row
-              className="group grid gap-5 border-b border-black/20 py-8 transition-colors duration-500 hover:bg-white/35 sm:py-10 md:grid-cols-12 md:items-center md:gap-8 md:py-12"
+              className="group grid gap-5 border-b border-black/20 py-8 px-5 transition-colors duration-500 hover:bg-white/35 sm:py-10 md:grid-cols-12 md:items-center md:gap-8 md:py-12"
             >
               <div className="flex items-center gap-4 md:col-span-2">
                 <span

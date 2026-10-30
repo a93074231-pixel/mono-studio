@@ -10,14 +10,14 @@ gsap.registerPlugin(ScrollTrigger);
 const manifestoLines = [
   [
     { text: "We don't make", accent: false },
-    { text: "more noise.", accent: true },
+    { text: "more NOISE.", accent: true },
   ],
   [
     { text: "We make", accent: false },
-    { text: "meaningful", accent: true },
+    { text: "Our work", accent: true },
   ],
   [
-    { text: "moves.", accent: true },
+    { text: "make NOISE", accent: true },
   ],
 ];
 

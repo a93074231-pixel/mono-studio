@@ -212,11 +212,11 @@ export default function Services() {
                   <span style={{ color: service.accent }}>.</span>
                 </h3>
 
-                <div className="mt-7 flex flex-wrap gap-2">
+                <div className="mt-7 flex  flex-wrap gap-2">
                   {service.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-black/15 px-3 py-2 text-[10px] text-black/70 sm:text-xs"
+                      className="rounded-full border bg-[#FFE4F6]  border-black/15 px-3 py-2 text-[10px] text-black/70 sm:text-xs"
                     >
                       {tag}
                     </span>

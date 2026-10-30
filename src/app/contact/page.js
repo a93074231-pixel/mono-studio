@@ -133,7 +133,7 @@ export default function ContactPage() {
               Big idea, small beginning, or something in between? Tell us
               what you are thinking. We will take it from there.
             </p>
-
+ 
             <span className="text-[10px] uppercase tracking-[0.2em] sm:text-xs">
               New business enquiries — 01
             </span>

@@ -15,9 +15,9 @@ const links = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const panelRef = useRef(null);
   const backdropRef = useRef(null);
-  const buttonRef = useRef(null);
   const timelineRef = useRef(null);
 
   useEffect(() => {
@@ -25,6 +25,8 @@ export default function Header() {
     const backdrop = backdropRef.current;
 
     if (!panel || !backdrop) return;
+
+    const menuLinks = panel.querySelectorAll(".menu-link");
 
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -36,7 +38,10 @@ export default function Header() {
         pointerEvents: "none",
       });
 
-      gsap.set(".menu-link", { y: 14, autoAlpha: 0 });
+      gsap.set(menuLinks, {
+        y: 14,
+        autoAlpha: 0,
+      });
 
       timelineRef.current = gsap.timeline({
         paused: true,
@@ -61,7 +66,7 @@ export default function Header() {
           reduceMotion ? 0 : "-=0.12"
         )
         .to(
-          ".menu-link",
+          menuLinks,
           {
             y: 0,
             autoAlpha: 1,
@@ -73,6 +78,7 @@ export default function Header() {
     });
 
     return () => {
+      timelineRef.current?.kill();
       timelineRef.current = null;
       ctx.revert();
     };
@@ -88,7 +94,11 @@ export default function Header() {
         transformOrigin: "top right",
       });
 
-      gsap.set(".menu-link", { y: 14, autoAlpha: 0 });
+      gsap.set(
+        panelRef.current.querySelectorAll(".menu-link"),
+        { y: 14, autoAlpha: 0 }
+      );
+
       timelineRef.current.play(0);
     } else {
       timelineRef.current.reverse();
@@ -97,7 +107,9 @@ export default function Header() {
 
   useEffect(() => {
     function handleKeyDown(event) {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -109,45 +121,51 @@ export default function Header() {
 
   return (
     <>
-      {/* Dim the page behind the menu */}
+      {/* Menu backdrop */}
       <button
         ref={backdropRef}
         type="button"
         aria-label="Close navigation"
         onClick={() => setMenuOpen(false)}
-        className="fixed inset-0 z-40 cursor-default bg-black/20 backdrop-blur-[2px]"
+        className="fixed inset-0 z-[90] cursor-default bg-black/25 backdrop-blur-[3px]"
       />
 
-      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-5 md:px-9 md:py-7">
+      {/* Shared floating header */}
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-[100] flex items-center justify-between px-5 py-5 md:px-9 md:py-7">
+
+        {/* Logo */}
         <Link
           href="/"
           aria-label="MONO home"
           onClick={() => setMenuOpen(false)}
-          className="flex h-[46px] w-[46px] items-center justify-center border-[2.5px] border-[#151515] text-lg font-extrabold tracking-[-2px] md:h-[54px] md:w-[54px] md:text-xl"
+          className="pointer-events-auto flex h-[46px] w-[46px] items-center justify-center border-2 border-[#151515] bg-[#EFEFEF]/95 text-lg font-extrabold tracking-[-2px] text-[#151515] shadow-[0_4px_18px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-300 hover:border-[#A11882] hover:text-[#A11882] md:h-[54px] md:w-[54px] md:text-xl"
         >
           M<span className="text-[#D253B6]">.</span>
         </Link>
 
-        <div className="flex items-center gap-2.5 md:gap-3">
-          <a
-            href="#contact"
+        {/* Header actions */}
+        <div className="pointer-events-auto flex items-center gap-2.5 md:gap-3">
+
+          {/* Hire us */}
+          <Link
+            href="/contact"
             onClick={() => setMenuOpen(false)}
-            className="group inline-flex items-center gap-1.5 rounded-full bg-[#151515] px-3 py-2.5 text-sm text-white transition-colors hover:bg-[#A11882] md:px-5 md:py-3"
+            className="group inline-flex items-center gap-2 rounded-full border border-[#151515]/10 bg-[#EFEFEF]/95 px-4 py-3 text-sm font-medium text-[#151515] shadow-[0_4px_18px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-300 hover:border-[#A11882] hover:bg-[#A11882] hover:text-white md:px-6 md:py-3.5 md:text-base"
           >
             Hire us
-            <span className="text-xl transition-transform group-hover:translate-x-1">
+            <span className="text-xl transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
-          </a>
+          </Link>
 
+          {/* Menu toggle */}
           <button
-            ref={buttonRef}
             type="button"
             aria-controls="mono-navigation"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((open) => !open)}
-            className="flex h-[42px] w-[42px] items-center justify-center rounded-full border-2 border-black transition-colors hover:bg-[#A11882] hover:text-white md:h-[44px] md:w-[44px]"
+            className="flex h-[44px] w-[44px] items-center justify-center rounded-full border border-[#151515]/10 bg-[#EFEFEF]/95 text-[#151515] shadow-[0_4px_18px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-300 hover:border-[#A11882] hover:bg-[#A11882] hover:text-white md:h-[48px] md:w-[48px]"
           >
             <span className="relative flex h-4 w-6 items-center justify-center">
               <span
@@ -164,43 +182,40 @@ export default function Header() {
           </button>
         </div>
 
+        {/* Dropdown navigation */}
+        <nav
+          id="mono-navigation"
+          ref={panelRef}
+          aria-label="Main navigation"
+          aria-hidden={!menuOpen}
+          inert={!menuOpen}
+          className="pointer-events-none invisible fixed right-4 top-4 z-[110] w-[min(370px,calc(100vw-2rem))] rounded-[26px] border border-black/5 bg-[#EFEFEF] px-[30px] pb-[30px] pt-[24px] text-[#151515] shadow-[0_20px_70px_rgba(0,0,0,0.2)] md:right-5 md:top-5 md:w-[370px]"
+        >
+          <div className="flex flex-col">
+            {links.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="menu-link block py-[5px] font-[var(--font-syne)] text-[29px] font-normal leading-[1.2] tracking-[-1.3px] transition-colors hover:text-[#A11882]"
+              >
+                {link.label}
+                {link.label === "Services" && (
+                  <span className="ml-1 text-[25px]">+</span>
+                )}
+              </Link>
+            ))}
+          </div>
 
-<nav
-  id="mono-navigation"
-  ref={panelRef}
-  aria-label="Main navigation"
-  aria-hidden={!menuOpen}
-  inert={!menuOpen}  
-    className="invisible pointer-events-none fixed right-4 top-4 z-[10000] w-[min(370px,calc(100vw-2rem))] rounded-[26px] bg-white px-[30px] pb-[30px] pt-[24px] text-black shadow-xl md:right-5 md:top-5 md:w-[370px]"
->
-
-
-  <div className="flex flex-col">
-    {links.map((link, index) => (
-      <a
-        key={link.label}
-        href={link.href}
-        onClick={() => setMenuOpen(false)}
-        className="menu-link block py-[5px] text-[29px] font-normal leading-[1.2] tracking-[-1.3px] transition-colors hover:text-neutral-500"
-      >
-        {link.label}
-        {link.label === "Services" && (
-          <span className="ml-1 text-[25px]">+</span>
-        )}
-      </a>
-    ))}
-  </div>
-
-  <a
-    href="#contact"
-    onClick={() => setMenuOpen(false)}
-    className="menu-link mt-[28px] flex items-center justify-between gap-3 rounded-full border-[1.5px] border-black px-[22px] py-[12px] text-[20px] leading-none tracking-[-0.5px] transition-colors hover:bg-black hover:text-white"
-  >
-    Start your project
-    <span className="text-[28px] font-light">→</span>
-  </a>
-</nav>
-
+          <Link
+            href="/contact"
+            onClick={() => setMenuOpen(false)}
+            className="menu-link mt-[28px] flex items-center justify-between gap-3 rounded-full border-[1.5px] border-[#151515] px-[22px] py-[12px] text-[20px] leading-none tracking-[-0.5px] transition-colors hover:bg-[#151515] hover:text-white"
+          >
+            Start your project
+            <span className="text-[28px] font-light">→</span>
+          </Link>
+        </nav>
       </header>
     </>
   );

@@ -54,7 +54,7 @@ export default function Manifesto() {
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.7,
+            duration: 0.9,
             ease: "power3.out",
             scrollTrigger: {
               trigger: item,
@@ -69,7 +69,7 @@ export default function Manifesto() {
       gsap.fromTo(
         words,
         {
-          autoAlpha: 0.15,
+          autoAlpha: 0.10,
           y: 22,
         },
         {
@@ -79,8 +79,8 @@ export default function Manifesto() {
           stagger: 0.12,
           scrollTrigger: {
             trigger: section.querySelector("[data-manifesto-statement]"),
-            start: "top 78%",
-            end: "bottom 48%",
+            start: "top 98%",
+            end: "bottom 68%",
             scrub: 0.7,
             invalidateOnRefresh: true,
           },

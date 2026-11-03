@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 const projectTypes = [
@@ -30,7 +31,10 @@ export default function ContactPage() {
   const pageRef = useRef(null);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [budget, setBudget] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [submissionError, setSubmissionError] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -77,35 +81,73 @@ export default function ContactPage() {
     );
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+async function handleSubmit(event) {
+  event.preventDefault();
 
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const company = formData.get("company") || "Not provided";
-    const message = formData.get("message");
-    const timeline = formData.get("timeline") || "Not specified";
+  if (submitting) return;
 
-    const subject = encodeURIComponent(
-      `New project inquiry from ${name}`
+  // Save the form reference before the async operation
+  const form = event.currentTarget;
+
+  setSubmitting(true);
+  setSubmissionMessage("");
+  setSubmissionError(false);
+
+  const formData = new FormData(form);
+
+  const enquiryData = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    company: formData.get("company"),
+    projectTypes: selectedTypes,
+    budget: budget,
+    timeline: formData.get("timeline"),
+    message: formData.get("message"),
+  };
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(enquiryData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Unable to submit your enquiry."
+      );
+    }
+
+    setSubmissionMessage(
+      "Thank you! Your enquiry has been received. We'll be in touch soon."
     );
 
-    const body = encodeURIComponent(
-      `Hello MONO,\n\nI'd like to discuss a project.\n\n` +
-        `Name: ${name}\n` +
-        `Email: ${email}\n` +
-        `Company: ${company}\n` +
-        `Project type: ${selectedTypes.join(", ") || "Not specified"}\n` +
-        `Budget: ${budget || "Not specified"}\n` +
-        `Timeline: ${timeline}\n\n` +
-        `Project details:\n${message}\n`
+    setSubmissionError(false);
+
+    // Reset the form using the saved reference
+    form.reset();
+
+    setSelectedTypes([]);
+    setBudget("");
+
+  } catch (error) {
+    console.error("Contact form submission error:", error);
+
+    setSubmissionMessage(
+      error.message || "Something went wrong. Please try again."
     );
 
-    window.location.href = `mailto:hello@mono.studio?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    setSubmissionError(true);
+
+  } finally {
+    setSubmitting(false);
   }
+}
 
   return (
     <main
@@ -218,17 +260,23 @@ export default function ContactPage() {
               </span>
             </div>
 
-            {submitted && (
-              <div
-                role="status"
-                className="mb-6 rounded-xl border border-[#A11882]/30 bg-[#D253B6]/10 p-4 text-sm leading-6"
-              >
-                Your email app should open with your project details. Please
-                send the prepared email to complete your enquiry.
-              </div>
-            )}
+            
+                {submissionMessage && (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`mb-6 rounded-xl border p-4 text-sm leading-6 ${
+                      submissionError
+                        ? "border-red-500/30 bg-red-500/10 text-red-700"
+                        : "border-[#A11882]/30 bg-[#D253B6]/10 text-[#151515]"
+                    }`}
+                  >
+                    {submissionMessage}
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="space-y-9">
+
+              <form onSubmit={handleSubmit} className="space-y-9">
               {/* Name and email */}
               <div className="grid gap-7 sm:grid-cols-2">
                 <div>
@@ -397,15 +445,19 @@ export default function ContactPage() {
                   details in your default email application.
                 </p>
 
-                <button
-                  type="submit"
-                  className="group flex w-full items-center justify-between gap-8 rounded-full bg-[#151515] px-6 py-4 text-sm text-white transition-colors duration-300 hover:bg-[#A11882] sm:w-auto"
-                >
-                  Send your enquiry
-                  <span className="text-xl transition-transform duration-300 group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
+                
+<button
+  type="submit"
+  disabled={submitting}
+  className="group flex w-full items-center justify-between gap-8 rounded-full bg-[#151515] px-6 py-4 text-sm text-white transition-colors duration-300 hover:bg-[#A11882] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+>
+  {submitting ? "Sending enquiry..." : "Send your enquiry"}
+
+  <span className="text-xl transition-transform duration-300 group-hover:translate-x-1">
+    {submitting ? "..." : "→"}
+  </span>
+</button>
+
               </div>
             </form>
           </div>
